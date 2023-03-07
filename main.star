@@ -26,13 +26,6 @@ def run(plan, args):
         plan.add_service(service_name = node_name, config = config)
         
 
-    sleep_recipe = ExecRecipe(
-        service_name = "cassandra-node-1",
-        command = ["sleep", "60"]
-    )
-
-    plan.exec(sleep_recipe)
-
     node_tool_check = "nodetool status | grep UN | wc -l | tr -d '\n'"
 
     check_nodes_are_up = ExecRecipe(
@@ -40,9 +33,7 @@ def run(plan, args):
         command = ["/bin/sh", "-c", node_tool_check],
     )
 
-    result = plan.exec(check_nodes_are_up)
-    
-    plan.assert(result["output"], "==", str(num_nodes))
+    plan.wait(check_nodes_are_up, "output", "==", str(num_nodes))
     
 
 
