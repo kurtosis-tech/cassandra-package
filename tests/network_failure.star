@@ -1,5 +1,8 @@
 main_cassandra_module = import_module("github.com/kurtosis-tech/cassandra-package/main.star")
 
+SUBNETWORK_1 = "first_sub_network"
+SUBNETWORK_2 = "second_sub_network"
+
 def run(plan, args):
     print("Spinning up the Cassandra Package")
     cassandra_run_output = main_cassandra_module.run(plan, args)
@@ -56,7 +59,7 @@ def heal_and_verify(plan, cassandra_run_output):
 
     plan.print("Healing Partitions and Verifying Cluster is healthy")
 
-    llast_node_name = cassandra_run_output["node_names"][-1]
+    last_node_name = cassandra_run_output["node_names"][-1]
 
     plan.update_service(last_node_name, config=UpdateServiceConfig(subnetwork=SUBNETWORK_1))
 

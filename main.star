@@ -11,9 +11,6 @@ CLIENT_COMM_PORT_ID = "client"
 CLIENT_COM_PORT_NUMBER = 9042
 CLIENT_COM_PORT_PROTOCOL = "TCP"
 
-SUBNETWORK_1 = "first_sub_network"
-SUBNETWORK_2 = "second_sub_network"
-
 
 def run(plan, args):
     num_nodes = DEFAULT_NUMBER_OF_NODES
