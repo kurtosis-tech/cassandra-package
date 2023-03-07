@@ -95,7 +95,9 @@ def simulate_network_failure(plan, num_nodes):
         command = ["/bin/sh", "-c", check_dn_nodes],
     )
 
-    plan.wait(check_dn_nodes_recipe, "output", "==", 1)
+    result = plan.exec(check_dn_nodes_recipe)
+
+    plan.assert(result["output"], "==", "1")
 
 def heal_and_verify(plan, num_nodes):
     last_node_name = get_service_name(num_nodes-1)
