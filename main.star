@@ -25,12 +25,24 @@ def run(plan, args):
         config = get_service_config(num_nodes)
         plan.add_service(service_name = node_name, config = config)
         
-        # health_check_exec = ExecRecipe(
-        #     service_name = node_name,
-        #     command = ["/opt/bitnami/cassandra/bin/cqlsh", "-u cassandra", "-p cassandra" ,"-e \"describe keyspaces\""]
-        # )
-        
-        # plan.wait(health_check_exec, "code",  "==", 0)
+
+    sleep_recipe = ExecRecipe(
+        service_name = "cassandra-node-1",
+        command = ["sleep", "60"]
+    )
+
+    plan.exec(sleep_recipe)
+
+    node_tool_check = "nodetool status | grep UN | wc -l | tr -d '\n'"
+
+    check_nodes_are_up = ExecRecipe(
+        service_name = "cassandra-node-1",
+        command = ["/bin/sh", "-c", node_tool_check],
+    )
+
+    result = plan.exec(check_nodes_are_up)
+    
+    plan.assert(result["output"], "==", str(num_nodes))
     
 
 
