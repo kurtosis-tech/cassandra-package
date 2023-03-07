@@ -11,6 +11,7 @@ CLIENT_COMM_PORT_ID = "client"
 CLIENT_COM_PORT_NUMBER = 9042
 CLIENT_COM_PORT_PROTOCOL = "TCP"
 
+FIRST_NODE_INDEX = 0
 
 def run(plan, args):
     num_nodes = DEFAULT_NUMBER_OF_NODES
@@ -30,7 +31,7 @@ def run(plan, args):
     node_tool_check = "nodetool status | grep UN | wc -l | tr -d '\n'"
 
     check_nodes_are_up = ExecRecipe(
-        service_name = "cassandra-node-1",
+        service_name = get_first_node_name(),
         command = ["/bin/sh", "-c", node_tool_check],
     )
 
@@ -55,3 +56,7 @@ def get_service_config(num_nodes):
             "CASSANDRA_SEEDS":",".join(seeds)
         }
     )
+
+
+def get_first_node_name():
+    return get_service_name(FIRST_NODE_INDEX)

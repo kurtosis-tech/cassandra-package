@@ -7,6 +7,9 @@ def run(plan, args):
     print("Spinning up the Cassandra Package")
     cassandra_run_output = main_cassandra_module.run(plan, args)
 
+    if len(cassandra_run_output["num_nodes"]) < 2:
+        fail("Less than 2 nodes were spun up; cant do partitioning")
+
     simulate_network_failure(plan, cassandra_run_output)
     heal_and_verify(plan, cassandra_run_output)
 
@@ -33,7 +36,7 @@ def simulate_network_failure(plan, cassandra_run_output):
     check_un_nodes = "nodetool status | grep UN | wc -l | tr -d '\n'"
 
     check_un_nodes_recipe = ExecRecipe(
-        service_name = "cassandra-node-1",
+        service_name = main_cassandra_module.get_first_node_name(),
         command = ["/bin/sh", "-c", check_un_nodes],
     )
 
@@ -42,7 +45,7 @@ def simulate_network_failure(plan, cassandra_run_output):
     check_dn_nodes = "nodetool status | grep DN | wc -l | tr -d '\n'"
 
     check_dn_nodes_recipe = ExecRecipe(
-        service_name = "cassandra-node-1",
+        service_name = main_cassandra_module.get_first_node_name(),
         command = ["/bin/sh", "-c", check_dn_nodes],
     )
 
@@ -66,7 +69,7 @@ def heal_and_verify(plan, cassandra_run_output):
     node_tool_check = "nodetool status | grep UN | wc -l | tr -d '\n'"
 
     check_nodes_are_up = ExecRecipe(
-        service_name = "cassandra-node-1",
+        service_name = main_cassandra_module.get_first_node_name(),
         command = ["/bin/sh", "-c", node_tool_check],
     )
 
