@@ -68,6 +68,8 @@ def simulate_network_failure(plan, num_nodes):
     the second containing only the last node
     """
 
+    plan.print("Partitioning Cassandra Nodes into  2 different Networks")
+
     plan.set_connection(config=kurtosis.connection.BLOCKED)
 
     first_sub_network = range(0, num_nodes-1)
@@ -100,6 +102,8 @@ def simulate_network_failure(plan, num_nodes):
     plan.assert(result["output"], "==", "1")
 
 def heal_and_verify(plan, num_nodes):
+    plan.print("Healing Partitions and Verifying Cluster is healthy")
+
     last_node_name = get_service_name(num_nodes-1)
 
     plan.update_service(last_node_name, config=UpdateServiceConfig(subnetwork=SUBNETWORK_1))
