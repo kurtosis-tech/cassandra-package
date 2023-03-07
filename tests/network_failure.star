@@ -4,10 +4,10 @@ SUBNETWORK_1 = "first_sub_network"
 SUBNETWORK_2 = "second_sub_network"
 
 def run(plan, args):
-    print("Spinning up the Cassandra Package")
+    plan.print("Spinning up the Cassandra Package")
     cassandra_run_output = main_cassandra_module.run(plan, args)
 
-    if len(cassandra_run_output["num_nodes"]) < 2:
+    if len(cassandra_run_output["node_names"]) < 2:
         fail("Less than 2 nodes were spun up; cant do partitioning")
 
     simulate_network_failure(plan, cassandra_run_output)
@@ -73,4 +73,4 @@ def heal_and_verify(plan, cassandra_run_output):
         command = ["/bin/sh", "-c", node_tool_check],
     )
 
-    plan.wait(check_nodes_are_up, "output", "==", len(cassandra_run_output["node_names"]))
+    plan.wait(check_nodes_are_up, "output", "==", str(len(cassandra_run_output["node_names"])))
