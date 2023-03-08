@@ -26,7 +26,23 @@ jobs:
       - run: kurtosis engine restart
 
       - run: kurtosis run ${PWD}
+  run_tests:
+    executor: ubuntu_vm
+    steps: 
 
+      # Set up Kurtosis
+      - run: |
+          echo "deb [trusted=yes] https://apt.fury.io/kurtosis-tech/ /" | sudo tee /etc/apt/sources.list.d/kurtosis.list
+          sudo apt update
+          sudo apt install kurtosis-cli
+      - checkout
+
+      # We don't send metrics to avoid polluting our logs
+      - run: kurtosis config init dont-send-metrics
+
+      - run: kurtosis engine restart
+
+      - run: kurtosis run tests/network_failure.star --with-subnetworks
   
 workflows:
   build:
@@ -39,9 +55,11 @@ workflows:
               ignore:
                 - main
       - run_starlark:
-          context:
-            # This pulls in KurtosisBot's Github token, so that we can read from our private repos
-            - github-user
+          filters:
+            branches:
+              ignore:
+                - main
+      - run_tests:
           filters:
             branches:
               ignore:
