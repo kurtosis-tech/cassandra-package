@@ -33,6 +33,12 @@ workflows:
       # -- PR check jobs ------------------------------------------
       - kurtosis-docs-checker/check-docs:
           should-check-changelog: false
+          markdown-link-check-config-json: | 
+            {
+              "ignorePatterns": [
+                "pattern": "/run.gif"
+              ]
+            }
           filters:
             branches:
               ignore:
