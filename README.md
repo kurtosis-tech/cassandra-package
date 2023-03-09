@@ -1,5 +1,7 @@
 ### Cassandra Package
 
+![Run of the Cassandra Package](/run.gif)
+
 This is a [Kurtosis Starlark Package](https://docs.kurtosis.com/explanations/starlark) that allows you to spin up an `n node` Cassandra Cluster. It spins
 up 3 nodes by default but you can tweak it
 
