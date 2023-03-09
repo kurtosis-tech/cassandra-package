@@ -36,7 +36,9 @@ workflows:
           markdown-link-check-config-json: | 
             {
               "ignorePatterns": [
-                "pattern": "/run.gif"
+                {
+                  "pattern": "/run.gif"
+                }                
               ]
             }
           filters:
