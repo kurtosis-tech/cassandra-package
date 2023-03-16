@@ -54,7 +54,8 @@ def get_service_config(num_nodes):
         },
         env_vars = {
             "CASSANDRA_SEEDS":",".join(seeds),
-            "MAX_HEAP_SIZE": "1024M",
+            # without this set Cassandra tries to take 8G and OOMs
+            "MAX_HEAP_SIZE": "512M",
             "HEAP_NEWSIZE": "1M",
         }
     )
