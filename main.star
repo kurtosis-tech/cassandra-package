@@ -53,7 +53,9 @@ def get_service_config(num_nodes):
             CLIENT_COMM_PORT_ID : PortSpec(number = CLIENT_COM_PORT_NUMBER, transport_protocol = CLIENT_COM_PORT_PROTOCOL),
         },
         env_vars = {
-            "CASSANDRA_SEEDS":",".join(seeds)
+            "CASSANDRA_SEEDS":",".join(seeds),
+            "MAX_HEAP_SIZE": "1024M",
+            "HEAP_NEWSIZE": "1M",
         }
     )
 
