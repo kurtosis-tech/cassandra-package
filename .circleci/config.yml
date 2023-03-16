@@ -25,7 +25,8 @@ jobs:
 
       - run: kurtosis engine restart
 
-      - run: kurtosis run ${PWD}
+      - run: |
+          kurtosis run ${PWD} '{"num_nodes": 5}'
   
 workflows:
   build:
