@@ -35,7 +35,7 @@ def run(plan, args):
         command = ["/bin/sh", "-c", node_tool_check],
     )
 
-    plan.wait(check_nodes_are_up, "output", "==", str(num_nodes))
+    plan.wait(check_nodes_are_up, "output", "==", str(num_nodes), timeout ="1m")
 
     return {"node_names": [get_service_name(x) for x in range(num_nodes)]}
 
