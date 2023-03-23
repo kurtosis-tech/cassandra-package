@@ -31,11 +31,10 @@ def run(plan, args):
     node_tool_check = "nodetool status | grep UN | wc -l | tr -d '\n'"
 
     check_nodes_are_up = ExecRecipe(
-        service_name = get_first_node_name(),
         command = ["/bin/sh", "-c", node_tool_check],
     )
 
-    plan.wait(check_nodes_are_up, "output", "==", str(num_nodes), timeout ="5m")
+    plan.wait(check_nodes_are_up, "output", "==", str(num_nodes), timeout ="5m", service_name = get_first_node_name())
 
     return {"node_names": [get_service_name(x) for x in range(num_nodes)]}
 
