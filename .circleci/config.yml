@@ -8,6 +8,7 @@ executors:
 jobs:
   run_starlark:
     executor: ubuntu_vm
+    resource_class: xlarge
     steps:
 
       # Set up Kurtosis
