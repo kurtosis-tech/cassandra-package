@@ -25,7 +25,7 @@ def run(plan, args):
     for node in range(0, num_nodes):
         node_name = get_service_name(node)
         config = get_service_config(num_nodes)
-        plan.add_service(service_name = node_name, config = config)
+        plan.add_service(name = node_name, config = config)
         
 
     node_tool_check = "nodetool status | grep UN | wc -l | tr -d '\n'"
