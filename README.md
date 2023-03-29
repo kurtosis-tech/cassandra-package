@@ -21,6 +21,12 @@ If you want to override the number of nodes,
 kurtosis run github.com/kurtosis-tech/cassandra-package '{"num_nodes": <required_number_of_nodes>}'
 ```
 
+If you want to run this with monitoring on top; use
+
+```
+kurtosis run github.com/kurtosis-tech/cassandra-package '{"monitoring_enabled": true}'
+```
+
 ### Using this in your own package
 
 Kurtosis Packages can be used within other Kurtosis Packages, through what we call composition internally. Assuming you want to spin up Cassandra and your own service
