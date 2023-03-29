@@ -30,7 +30,7 @@ kurtosis run github.com/kurtosis-tech/cassandra-package '{"monitoring_enabled": 
 This will spin up Prometheus and Grafana on top of Cassandra using a `jmx_exporter`. If you copy the Grafana URL from the output of
 enclave run and paste it in your browser; you will be able to interact with metrics and dashboards on Grafana.
 
-`admin` is the default value for the username & password for Grafana. The dashboard is under "dashboards/Cassandra Dashboard"
+`admin` is the default value for the username & password for Grafana. The dashboard is under `dashboards/Cassandra Dashboard`.
 
 ### Using this in your own package
 
