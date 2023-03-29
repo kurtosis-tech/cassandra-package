@@ -53,8 +53,6 @@ def run(plan, args):
     node_tool_check = "nodetool status | grep UN | wc -l | tr -d '\n'"
 
     if monitoring_enabled:
-        # we had to set JVM_OPTS to jmx on the top; we unset it before we run nodetool
-        node_tool_check = 'JVM_OPTS="" ' + node_tool_check
         cassandra_metric_urls = [node_name + ":" + str(METRICS_PORT_NUMBER) for node_name in started_nodes]
         prometheus_enclave_url = prometheus_module.start_prometheus(plan, cassandra_metric_urls)
         grafana_module.start_grafana(plan, num_nodes, prometheus_enclave_url)
@@ -108,8 +106,8 @@ def get_service_config_with_monitoring(num_nodes):
             # without this set Cassandra tries to take 8G and OOMs
             "MAX_HEAP_SIZE": "1024M",
             "HEAP_NEWSIZE": "1M",
-            "JVM_OPTS": "-javaagent:/tmp/exporter_jar/jmx_prometheus_javaagent-0.18.0.jar=7070:/tmp/exporter_yml/jmx_exporter.yml"
         },
+        entrypoint=["/bin/sh", "-c", 'JVM_OPTS="$JVM_OPTS -javaagent:/tmp/exporter_jar/jmx_prometheus_javaagent-0.18.0.jar=7070:/tmp/exporter_yml/jmx_exporter.yml" /usr/local/bin/docker-entrypoint.sh'],
         files = {
             "/tmp/exporter_yml": JMX_EXPOTER_YML_ARTIFACT_NAME,
             "/tmp/exporter_jar": JMX_EXPORTER_JAR_ARTIFACT_NAME,
