@@ -1,3 +1,6 @@
+prometheus_module = import_module("github.com/kurtosis-tech/cassandra-package/monitoring/prometheus.star")
+grafana_module = import_module("github.com/kurtosis-tech/cassandra-package/monitoring/grafana.star")
+
 DEFAULT_NUMBER_OF_NODES = 3
 NUM_NODES_ARG_NAME = "num_nodes"
 CASSANDRA_NODE_PREFIX="cassandra-node-"
@@ -20,8 +23,7 @@ JMX_EXPOTER_YML_ARTIFACT_NAME = "jmx_exporter_yml"
 METRICS_PORT_ID = "metrics"
 METRICS_PORT_NUMBER = 7070
 METRICS_PORT_PROTOCOL = "TCP"
-GRAFANA_IMAGE = "grafana/grafana-enterprise:9.2.3"
-PROMETHEUS_IAMGE = "prom/prometheus:latest"
+
 
 def run(plan, args):
     num_nodes = DEFAULT_NUMBER_OF_NODES
@@ -36,23 +38,25 @@ def run(plan, args):
         monitoring_enabled = args.monitoring_enabled
         if monitoring_enabled not in (False, True):
             fail("Monitoring enabled can only be 'true' or 'false'")
-        upload_monitoring_config(plan)
+        upload_jmx_binary_and_config(plan)
 
     
+    started_nodes = []
     for node in range(0, num_nodes):
         node_name = get_service_name(node)
         config = get_service_config(num_nodes)
         if monitoring_enabled:
             config = get_service_config_with_monitoring(num_nodes)
-        plan.add_service(name = node_name, config = config)
-
+        cassandra_node = plan.add_service(name = node_name, config = config)
+        started_nodes.append(cassandra_node.name)
 
     node_tool_check = "nodetool status | grep UN | wc -l | tr -d '\n'"
 
     if monitoring_enabled:
         node_tool_check = 'JVM_OPTS="" ' + node_tool_check
-        prometheus = start_prometheus(plan, num_nodes)
-        start_grafana(plan, num_nodes, prometheus)
+        cassandra_metric_urls = [node_name + ":" + METRICS_PORT_NUMBER for node_name in started_nodes]
+        prometheus = prometheus_module.start_prometheus(plan, cassandra_metric_urls)
+        grafana_module.start_grafana(plan, num_nodes, prometheus)
 
     check_nodes_are_up = ExecRecipe(
         command = ["/bin/sh", "-c", node_tool_check],
@@ -60,7 +64,7 @@ def run(plan, args):
 
     plan.wait(check_nodes_are_up, "output", "==", str(num_nodes), timeout ="8m", service_name = get_first_node_name())
 
-    result =  {"node_names": [get_service_name(x) for x in range(num_nodes)]}
+    result =  {"node_names": started_nodes}
 
     if monitoring_enabled:
         result["grafana_username"] = "admin"
@@ -112,83 +116,7 @@ def get_service_config_with_monitoring(num_nodes):
     )
 
 
-def start_prometheus(plan, num_nodes):
-    prometheus_template = read_file("github.com/kurtosis-tech/cassandra-package/static_files/prometheus.yml.tmpl")
-    host_names_and_port = json.encode(["cassandra-node-"+str(x)+":7070" for x in range(0, num_nodes)])
-    targets_map = {
-        "targets": host_names_and_port
-    }
-    template_and_data = {
-        "prometheus.yml": struct(
-            template = prometheus_template,
-            data = targets_map,
-        )
-    }
-
-    rendered_config_file = plan.render_templates(template_and_data, "prometheus-config")
-
-    config = ServiceConfig(
-            image = PROMETHEUS_IAMGE,
-            ports = {
-                "http": PortSpec(number = 9090, transport_protocol = "TCP", application_protocol = "http")
-            },
-            files = {
-                "/config": rendered_config_file
-            },
-            cmd = [
-                "--config.file=" + "/config/prometheus.yml",
-                "--storage.tsdb.path=/prometheus",
-			    "--storage.tsdb.retention.time=1d",
-			    "--storage.tsdb.retention.size=512MB"
-            ]
-    )
-
-    return plan.add_service(name = "prometheus", config=config)
-
-
-
-def start_grafana(plan, num_nodes, prometheus):
-    prometheus_enclave_url = "http://{0}:{1}".format(prometheus.ip_address, 9090)
-
-    dashboard_config_template_and_data = {
-        "datasources/datasource.yml": struct(
-            template = read_file("github.com/kurtosis-tech/cassandra-package/static_files/grafana-datasoure.yml.tmpl"),
-            data = {
-                "PrometheusURL": prometheus_enclave_url
-            }
-        ),
-        "dashboards/dashboard-providers.yml": struct(
-            template = read_file("github.com/kurtosis-tech/cassandra-package/static_files/grafana-dashboards-providers.yml.tmpl"),
-            data = {
-                "DashboardsDirpath": "/dashboards/grafana-dashboards.json",
-            }
-        )
-    }
-
-    rendered_config_artifact = plan.render_templates(dashboard_config_template_and_data, name = "grafana-config")
-    dashboards_artifact = plan.upload_files(
-        src = "github.com/kurtosis-tech/cassandra-package/static_files/grafana-dashboards.json",
-        name = "grafana-dashboards",
-    )
-
-    config = ServiceConfig(
-        image = GRAFANA_IMAGE,
-        ports = {
-            "http": PortSpec(number = 3000, transport_protocol = "TCP", application_protocol = "http")
-        },
-        env_vars = {
-            "GF_PATHS_PROVISIONING": "/config",
-        },
-        files = {
-            "/config": rendered_config_artifact,
-            "/dashboards": dashboards_artifact
-        }
-    )
-
-    return plan.add_service("grafana", config)
-
-
-def upload_monitoring_config(plan):
+def upload_jmx_binary_and_config(plan):
     plan.upload_files(
         src = "github.com/kurtosis-tech/cassandra-package/static_files/jmx_prometheus_javaagent-0.18.0.jar",
         name = JMX_EXPORTER_JAR_ARTIFACT_NAME,
