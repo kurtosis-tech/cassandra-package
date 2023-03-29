@@ -54,9 +54,9 @@ def run(plan, args):
 
     if monitoring_enabled:
         node_tool_check = 'JVM_OPTS="" ' + node_tool_check
-        cassandra_metric_urls = [node_name + ":" + METRICS_PORT_NUMBER for node_name in started_nodes]
-        prometheus = prometheus_module.start_prometheus(plan, cassandra_metric_urls)
-        grafana_module.start_grafana(plan, num_nodes, prometheus)
+        cassandra_metric_urls = [node_name + ":" + str(METRICS_PORT_NUMBER) for node_name in started_nodes]
+        prometheus_enclave_url = prometheus_module.start_prometheus(plan, cassandra_metric_urls)
+        grafana_module.start_grafana(plan, num_nodes, prometheus_enclave_url)
 
     check_nodes_are_up = ExecRecipe(
         command = ["/bin/sh", "-c", node_tool_check],
