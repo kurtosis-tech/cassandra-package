@@ -44,6 +44,3 @@ def start_prometheus(plan, cassandra_metric_urls):
     prometheus = plan.add_service(name = "prometheus", config=config)
 
     return "http://{0}:{1}".format(prometheus.ip_address, PROMETHEUS_HTTP_PORT)
-
-
-
