@@ -53,6 +53,7 @@ def run(plan, args):
     node_tool_check = "nodetool status | grep UN | wc -l | tr -d '\n'"
 
     if monitoring_enabled:
+        # we had to set JVM_OPTS to jmx on the top; we unset it before we run nodetool
         node_tool_check = 'JVM_OPTS="" ' + node_tool_check
         cassandra_metric_urls = [node_name + ":" + str(METRICS_PORT_NUMBER) for node_name in started_nodes]
         prometheus_enclave_url = prometheus_module.start_prometheus(plan, cassandra_metric_urls)
