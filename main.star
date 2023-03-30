@@ -64,7 +64,7 @@ def run(plan, args):
         command = ["/bin/sh", "-c", node_tool_check],
     )
 
-    plan.wait(check_nodes_are_up, "output", "==", str(num_nodes), timeout ="8m", service_name = get_first_node_name())
+    plan.wait(recipe = check_nodes_are_up, field = "output", assertion = "==", target_value = str(num_nodes), timeout = "8m", service_name = get_first_node_name())
 
     result =  {"node_names": [node.name for node in started_nodes]}
 
