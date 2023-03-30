@@ -24,6 +24,9 @@ METRICS_PORT_ID = "metrics"
 METRICS_PORT_NUMBER = 7070
 METRICS_PORT_PROTOCOL = "TCP"
 
+MAX_HEAP_SIZE = "512M"
+HEAP_NEWSIZE = "1M"
+
 
 def run(plan, args):
     num_nodes = DEFAULT_NUMBER_OF_NODES
@@ -86,8 +89,8 @@ def get_service_config(num_nodes):
         env_vars = {
             "CASSANDRA_SEEDS":",".join(seeds),
             # without this set Cassandra tries to take 8G and OOMs
-            "MAX_HEAP_SIZE": "512M",
-            "HEAP_NEWSIZE": "1M",
+            "MAX_HEAP_SIZE": MAX_HEAP_SIZE,
+            "HEAP_NEWSIZE": HEAP_NEWSIZE,
         }
     )
 
@@ -104,8 +107,8 @@ def get_service_config_with_monitoring(num_nodes):
         env_vars = {
             "CASSANDRA_SEEDS":",".join(seeds),
             # without this set Cassandra tries to take 8G and OOMs
-            "MAX_HEAP_SIZE": "1024M",
-            "HEAP_NEWSIZE": "1M",
+            "MAX_HEAP_SIZE": MAX_HEAP_SIZE,
+            "HEAP_NEWSIZE": HEAP_NEWSIZE,
         },
         entrypoint=["/bin/sh", "-c", 'JVM_OPTS="$JVM_OPTS -javaagent:/tmp/exporter_jar/jmx_prometheus_javaagent-0.18.0.jar=7070:/tmp/exporter_yml/jmx_exporter.yml" /usr/local/bin/docker-entrypoint.sh'],
         files = {
