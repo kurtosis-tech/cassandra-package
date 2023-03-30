@@ -30,15 +30,15 @@ HEAP_NEWSIZE = "1M"
 
 def run(plan, args):
     num_nodes = DEFAULT_NUMBER_OF_NODES
-    if hasattr(args, NUM_NODES_ARG_NAME):
-        num_nodes = args.num_nodes
+    if NUM_NODES_ARG_NAME in args:
+        num_nodes = args["num_nodes"]
 
     if num_nodes == 0:
         fail("Need at least 1 node to Start Cassandra cluster got 0")
 
     monitoring_enabled = DEFAULT_DO_NOT_MONITOR
-    if hasattr(args, MONITORING_ENABLED_ARG_NAME):
-        monitoring_enabled = args.monitoring_enabled
+    if MONITORING_ENABLED_ARG_NAME in args:
+        monitoring_enabled = args["monitoring_enabled"]
         if monitoring_enabled not in (False, True):
             fail("Monitoring enabled can only be 'true' or 'false'")
         upload_jmx_binary_and_config(plan)
