@@ -48,12 +48,12 @@ def run(plan, args):
         if monitoring_enabled:
             config = get_service_config_with_monitoring(num_nodes)
         cassandra_node = plan.add_service(name = node_name, config = config)
-        started_nodes.append(cassandra_node.name)
+        started_nodes.append(cassandra_node)
 
     node_tool_check = "nodetool status | grep UN | wc -l | tr -d '\n'"
 
     if monitoring_enabled:
-        cassandra_metric_urls = [node_name + ":" + str(METRICS_PORT_NUMBER) for node_name in started_nodes]
+        cassandra_metric_urls = [node.hostname + ":" + str(METRICS_PORT_NUMBER) for node in started_nodes]
         prometheus_enclave_url = prometheus_module.start_prometheus(plan, cassandra_metric_urls)
         grafana_module.start_grafana(plan, num_nodes, prometheus_enclave_url)
 
@@ -63,7 +63,7 @@ def run(plan, args):
 
     plan.wait(check_nodes_are_up, "output", "==", str(num_nodes), timeout ="8m", service_name = get_first_node_name())
 
-    result =  {"node_names": started_nodes}
+    result =  {"node_names": [node.name for node in started_nodes]}
 
     if monitoring_enabled:
         result["grafana_username"] = "admin"
