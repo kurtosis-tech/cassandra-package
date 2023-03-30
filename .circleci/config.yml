@@ -24,7 +24,7 @@ jobs:
       - run: kurtosis engine restart
 
       - run: |
-          kurtosis run ${PWD} '{"num_nodes": 5}'
+          kurtosis run ${PWD} '{"num_nodes": 3, "monitoring_enabled": true}'
   
 workflows:
   build:

@@ -21,6 +21,17 @@ If you want to override the number of nodes,
 kurtosis run github.com/kurtosis-tech/cassandra-package '{"num_nodes": <required_number_of_nodes>}'
 ```
 
+If you want to run this with monitoring on top; use
+
+```
+kurtosis run github.com/kurtosis-tech/cassandra-package '{"monitoring_enabled": true}'
+```
+
+This will spin up local instances of Prometheus and Grafana connected to your Cassandra cluster using a `jmx_exporter`. If you copy the Grafana URL from the output of
+enclave run and paste it in your browser; you will be able to interact with metrics and dashboards on Grafana.
+
+`admin` is the default value for the username & password for Grafana. The dashboard is under `dashboards/Cassandra Dashboard`.
+
 ### Using this in your own package
 
 Kurtosis Packages can be used within other Kurtosis Packages, through what we call composition internally. Assuming you want to spin up Cassandra and your own service
