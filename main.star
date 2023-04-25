@@ -9,10 +9,12 @@ CASSANDRA_NODE_IMAGE = "cassandra:4.0"
 CLUSTER_COMM_PORT_ID = "cluster"
 CLUSTER_COM_PORT_NUMBER =  7000
 CLUSTER_COM_PORT_PROTOCOL = "TCP"
+CLUSTER_COM_PORT_AUTOMATIC_WAIT_DISABLE = None
 
 CLIENT_COMM_PORT_ID = "client"
 CLIENT_COM_PORT_NUMBER = 9042
 CLIENT_COM_PORT_PROTOCOL = "TCP"
+CLIENT_COM_PORT_AUTOMATIC_WAIT_DISABLE = None
 
 FIRST_NODE_INDEX = 0
 
@@ -83,8 +85,8 @@ def get_service_config(num_nodes):
     return ServiceConfig(
         image = CASSANDRA_NODE_IMAGE,
         ports = {
-            CLUSTER_COMM_PORT_ID : PortSpec(number = CLUSTER_COM_PORT_NUMBER, transport_protocol = CLUSTER_COM_PORT_PROTOCOL),
-            CLIENT_COMM_PORT_ID : PortSpec(number = CLIENT_COM_PORT_NUMBER, transport_protocol = CLIENT_COM_PORT_PROTOCOL),
+            CLUSTER_COMM_PORT_ID : PortSpec(number = CLUSTER_COM_PORT_NUMBER, transport_protocol = CLUSTER_COM_PORT_PROTOCOL, wait = CLUSTER_COM_PORT_AUTOMATIC_WAIT_DISABLE),
+            CLIENT_COMM_PORT_ID : PortSpec(number = CLIENT_COM_PORT_NUMBER, transport_protocol = CLIENT_COM_PORT_PROTOCOL, wait = CLIENT_COM_PORT_AUTOMATIC_WAIT_DISABLE),
         },
         env_vars = {
             "CASSANDRA_SEEDS":",".join(seeds),
@@ -100,8 +102,8 @@ def get_service_config_with_monitoring(num_nodes):
     return ServiceConfig(
         image = CASSANDRA_NODE_IMAGE,
         ports = {
-            CLUSTER_COMM_PORT_ID : PortSpec(number = CLUSTER_COM_PORT_NUMBER, transport_protocol = CLUSTER_COM_PORT_PROTOCOL),
-            CLIENT_COMM_PORT_ID : PortSpec(number = CLIENT_COM_PORT_NUMBER, transport_protocol = CLIENT_COM_PORT_PROTOCOL),
+            CLUSTER_COMM_PORT_ID : PortSpec(number = CLUSTER_COM_PORT_NUMBER, transport_protocol = CLUSTER_COM_PORT_PROTOCOL, wait = CLUSTER_COM_PORT_AUTOMATIC_WAIT_DISABLE),
+            CLIENT_COMM_PORT_ID : PortSpec(number = CLIENT_COM_PORT_NUMBER, transport_protocol = CLIENT_COM_PORT_PROTOCOL, wait = CLIENT_COM_PORT_AUTOMATIC_WAIT_DISABLE),
             METRICS_PORT_ID: PortSpec(number = METRICS_PORT_NUMBER, transport_protocol = METRICS_PORT_PROTOCOL)
         },
         env_vars = {
