@@ -1,15 +1,15 @@
 GRAFANA_IMAGE = "grafana/grafana-enterprise:9.2.3"
 
 GRAFANA_CONFIG_DIR = "/config"
-GRAFANA_DATASOURCE_CONFIG_TEMPLATE_PATH =  "../static_files/grafana-datasoure.yml.tmpl"
+GRAFANA_DATASOURCE_CONFIG_TEMPLATE_PATH =  "/static_files/grafana-datasoure.yml.tmpl"
 GRAFANA_DATASOURCE_CONFIG_TEMPLATE_FILENAME = "datasources/datasource.yml"
-GRAFANA_DASHBOARD_PROVIDER_CONFIG_TEMPLATE_PATH = "../static_files/grafana-dashboards-providers.yml.tmpl"
+GRAFANA_DASHBOARD_PROVIDER_CONFIG_TEMPLATE_PATH = "/static_files/grafana-dashboards-providers.yml.tmpl"
 GRAFNA_DASHBOARD_PROVIDER_CONFIG_YML_FILENAME = "dashboards/dashboard-providers.yml"
 
 GRAFANA_DASHBOARDS_DIR = "/dashboards"
 GRAFANA_DASHBOARDS_FILENAME = "grafana-dashboards.json"
 GRAFANA_DASHBOARDS_FILEPATH = GRAFANA_DASHBOARDS_DIR  + "/" + GRAFANA_DASHBOARDS_FILENAME
-GRAFANA_DASHBOARDS_FILEPATH_IN_PACKAGE = "../static_files/grafana-dashboards.json"
+GRAFANA_DASHBOARDS_FILEPATH_IN_PACKAGE = "/static_files/grafana-dashboards.json"
 
 GRAFANA_HTTP_PORT_ID = "http"
 GRAFANA_HTTP_PORT_NUMBER = 3000

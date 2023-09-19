@@ -1,6 +1,6 @@
 PROMETHEUS_IMAGE = "prom/prometheus:latest"
 
-PROMETHEUS_CONFIG_TEMPLATE_PATH = "../static_files/prometheus.yml.tmpl"
+PROMETHEUS_CONFIG_TEMPLATE_PATH = "/static_files/prometheus.yml.tmpl"
 PROMETHEUS_CONFIG_DIR = "/config"
 PROMETHEUS_YML_TARGET_FILE_NAME = "prometheus.yml"
 PROMETHEUS_YML_TARGET_PATH = PROMETHEUS_CONFIG_DIR + "/" + PROMETHEUS_YML_TARGET_FILE_NAME
