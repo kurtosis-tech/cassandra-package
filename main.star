@@ -1,5 +1,5 @@
-prometheus_module = import_module("github.com/kurtosis-tech/cassandra-package/monitoring/prometheus.star")
-grafana_module = import_module("github.com/kurtosis-tech/cassandra-package/monitoring/grafana.star")
+prometheus_module = import_module("./monitoring/prometheus.star")
+grafana_module = import_module("./monitoring/grafana.star")
 
 DEFAULT_NUMBER_OF_NODES = 3
 NUM_NODES_ARG_NAME = "num_nodes"
@@ -122,12 +122,12 @@ def get_service_config_with_monitoring(num_nodes):
 
 def upload_jmx_binary_and_config(plan):
     plan.upload_files(
-        src = "github.com/kurtosis-tech/cassandra-package/static_files/jmx_prometheus_javaagent-0.18.0.jar",
+        src = "./static_files/jmx_prometheus_javaagent-0.18.0.jar",
         name = JMX_EXPORTER_JAR_ARTIFACT_NAME,
     )
     
     plan.upload_files(
-        src = "github.com/kurtosis-tech/cassandra-package/static_files/jmx_exporter.yml",
+        src = "./static_files/jmx_exporter.yml",
         name = JMX_EXPOTER_YML_ARTIFACT_NAME,
     )
 
